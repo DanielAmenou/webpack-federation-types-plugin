@@ -1,4 +1,4 @@
-const validate = require("schema-utils")
+const validate = require("schema-utils").validate
 const ts = require("typescript")
 const axios = require("axios")
 const fs = require("fs-extra")
@@ -39,7 +39,7 @@ const getAssetData = (content) => {
 }
 
 class FederationTypesPlugin {
-  constructor(options) {
+  constructor(options = {}) {
     validate(optionsSchema, options)
     this._options = options
   }
@@ -159,9 +159,10 @@ class FederationTypesPlugin {
     }
 
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
+      const pluginOptions = this._options || {}
       compilation.hooks.beforeCodeGeneration.tap(PLUGIN_NAME, () => {
-        if (this._options.exposeTypes !== false) createTypesDefinitions(compilation)
-        if (compilation.options.mode === "development" && this._options.importTypes !== false) {
+        if (pluginOptions.exposeTypes !== false) createTypesDefinitions(compilation)
+        if (compilation.options.mode === "development" && pluginOptions.importTypes !== false) {
           getTypesDefinitions()
           // TODO - call getTypesDefinitions using setInterval
         }
