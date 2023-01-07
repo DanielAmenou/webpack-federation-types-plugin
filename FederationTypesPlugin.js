@@ -17,7 +17,7 @@ const tscOptions = {
 const optionsSchema = {
   type: "object",
   properties: {
-    ignoreRemotes: {
+    excludeRemotes: {
       type: "array",
     },
     exposeTypes: {
@@ -109,8 +109,8 @@ class FederationTypesPlugin {
       const remotes = federationPlugin._options.remotes
       if (!remotes) return
 
-      const ignoreRemotes = this._options.ignoreRemotes || []
-      const wantedRemotes = Object.entries(remotes).filter((remote) => !ignoreRemotes.find((c) => c === remote[0]))
+      const excludeRemotes = this._options.excludeRemotes || []
+      const wantedRemotes = Object.entries(remotes).filter((remote) => !excludeRemotes.find((c) => c === remote[0]))
 
       for (const [remoteName, remoteEntryUri] of wantedRemotes) {
         const {origin, pathname} = new URL(remoteEntryUri.split("@")[1])

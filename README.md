@@ -17,7 +17,7 @@ const FederationTypesPlugin = require("webpack-federation-types-plugin")
 
 module.exports = {
   // ...
-  plugins: [new FederationTypesPlugin({ignoreRemotes: ["remoteName"], importTypes: true, exposeTypes: true})],
+  plugins: [new FederationTypesPlugin({excludeRemotes: ["remoteName"], importTypes: true, exposeTypes: true})],
 }
 ```
 
@@ -36,7 +36,7 @@ Type: boolean
 Default: true
 Description: fetch the remotes declaration files and add them to the @types directory
 
-##### ignoreRemotes
+##### excludeRemotes
 
 Type: string[]
 Default: undefined
