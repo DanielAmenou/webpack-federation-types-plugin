@@ -1,0 +1,31 @@
+{
+  "name": "webpack-federation-types-plugin",
+  "description": "This plugin adds type definitions for remote modules",
+  "version": "1.0.0",
+  "main": "FederationTypesPlugin.js",
+  "scripts": {
+    "publish:patch": "npm version patch -m \"patch version - %s\" && npm publish",
+    "publish:minor": "npm version minor -m \"minor version - %s\" && npm publish",
+    "publish:major": "npm version major -m \"major version - %s\" && npm publish",
+    "postpublish": "git push && git push --tags"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "types",
+    "module federation"
+  ],
+  "homepage": "https://github.com/DanielAmenou/webpack-federation-types-plugin#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DanielAmenou/webpack-federation-types-plugin.git"
+  },
+  "author": "Daniel Amenou <amenou.daniel@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.2.2",
+    "fs-extra": "^11.1.0",
+    "schema-utils": "^4.0.0",
+    "typescript": "^4.9.4"
+  }
+}
