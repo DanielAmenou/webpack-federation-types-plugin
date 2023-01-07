@@ -1,7 +1,7 @@
 {
   "name": "webpack-federation-types-plugin",
   "description": "This plugin adds type definitions for remote modules",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "FederationTypesPlugin.js",
   "scripts": {
     "publish:patch": "npm version patch -m \"patch version - %s\" && npm publish",
