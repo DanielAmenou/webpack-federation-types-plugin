@@ -3,6 +3,7 @@
   "description": "This plugin adds type definitions for remote modules",
   "version": "1.0.1",
   "main": "FederationTypesPlugin.js",
+  "types": "types.d.ts",
   "scripts": {
     "publish:patch": "npm version patch -m \"patch version - %s\" && npm publish",
     "publish:minor": "npm version minor -m \"minor version - %s\" && npm publish",
