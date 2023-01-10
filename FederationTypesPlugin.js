@@ -3,6 +3,7 @@ const ts = require("typescript")
 const axios = require("axios")
 const fs = require("fs-extra")
 const path = require("path")
+const ms = require("ms")
 
 const PLUGIN_NAME = "FederationTypesPlugin"
 const MF_TYPES_DIR = "federation-types"
@@ -26,6 +27,9 @@ const optionsSchema = {
     importTypes: {
       type: "boolean",
     },
+    getTypesInterval: {
+      type: "string",
+    },
   },
 }
 
@@ -48,6 +52,7 @@ class FederationTypesPlugin {
    * @param {import("webpack").Compiler} compiler
    */
   apply(compiler) {
+    let getTypesInterval
     const federationPlugin =
       compiler.options.plugins && compiler.options.plugins.find((plugin) => plugin.constructor.name === "ModuleFederationPlugin")
     if (!federationPlugin) throw new Error("No ModuleFederationPlugin found.")
@@ -164,7 +169,10 @@ class FederationTypesPlugin {
         if (pluginOptions.exposeTypes !== false) createTypesDefinitions(compilation)
         if (compilation.options.mode === "development" && pluginOptions.importTypes !== false) {
           getTypesDefinitions()
-          // TODO - call getTypesDefinitions using setInterval
+          if (pluginOptions.getTypesInterval) {
+            clearInterval(getTypesInterval)
+            getTypesInterval = setInterval(() => getTypesDefinitions(compilation), ms(pluginOptions.getTypesInterval))
+          }
         }
       })
     })

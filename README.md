@@ -42,3 +42,9 @@ Type: string[]
 Default: undefined
 Description: remotes to ignore
 
+##### getTypesInterval
+
+Type: string
+Default: undefined
+Description: the interval between types requests
+Example: "5 minutes", "30 seconds"
