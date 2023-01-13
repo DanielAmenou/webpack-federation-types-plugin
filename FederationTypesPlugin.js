@@ -5,6 +5,7 @@ const fs = require("fs-extra")
 const path = require("path")
 const ms = require("ms")
 
+let isFirstCompilation = true
 const PLUGIN_NAME = "FederationTypesPlugin"
 const MF_TYPES_DIR = "federation-types"
 const DECLARATION_FILE_EXT = ".d.ts"
@@ -58,13 +59,25 @@ class FederationTypesPlugin {
     if (!federationPlugin) throw new Error("No ModuleFederationPlugin found.")
     const logger = compiler.getInfrastructureLogger(PLUGIN_NAME)
 
-    const exposes = Object.fromEntries(Object.entries(federationPlugin._options.exposes || {}).map(([k, v]) => [k.replace("./", ""), v]))
+    const exposes = Object.fromEntries(Object.entries(federationPlugin._options.exposes || {}).map(([moduleName, currentPath]) => {
+      let isIndexFile = false
+      const absPath = path.resolve(process.cwd(), currentPath)
+      const hasExtension = !!path.extname(currentPath)
+      const extension = hasExtension ? "" : fs.existsSync(absPath + ".jsx") ? ".jsx" : fs.existsSync(absPath + ".js") ? ".js" : ""
+      if (!hasExtension && extension === "") {
+        if ( fs.existsSync(path.resolve(absPath, "index.js"))) {
+          isIndexFile = true
+        }
+        else logger.error(`Couldn't find ${currentPath}`)
+      }
+
+      return [moduleName.replace("./", ""), currentPath + (isIndexFile ? "/index.js" : "") + extension]
+    }
+    ))
 
     const modulesPathsMap = Object.fromEntries(
       Object.entries(exposes).map(([name, currentPath]) => {
-        const absPath = path.resolve(process.cwd(), currentPath)
-        const extension = path.extname(currentPath) ? "" : fs.existsSync(absPath + ".jsx") ? ".jsx" : ".js"
-        return [name, path.join(process.cwd(), currentPath + extension).replace(/\\/g, "/")]
+        return [name, path.join(process.cwd(), currentPath).replace(/\\/g, "/")]
       })
     )
 
@@ -127,8 +140,8 @@ class FederationTypesPlugin {
           // get types index from the current remote
           .get(federationTypesUrl + "index.json")
           .catch((error) => {
-            if (error.response?.status === 404) logger.warn(`WARNING: remote ${remoteName} has no types`)
-            else logger.error("Failed to get remote types index", error.message)
+            if (error.response?.status === 404) logger.warn(`WARNING: The remote ${remoteName} has no types`)
+            else logger.error(`Failed to get remote types from ${remotePublicUrl}.`, error.message)
           })
           .then((response) => response?.data)
           .then((modulesNames) => {
@@ -166,6 +179,8 @@ class FederationTypesPlugin {
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
       const pluginOptions = this._options || {}
       compilation.hooks.beforeCodeGeneration.tap(PLUGIN_NAME, () => {
+        if (!isFirstCompilation) return
+        isFirstCompilation = false
         if (pluginOptions.exposeTypes !== false) createTypesDefinitions(compilation)
         if (compilation.options.mode === "development" && pluginOptions.importTypes !== false) {
           getTypesDefinitions()
