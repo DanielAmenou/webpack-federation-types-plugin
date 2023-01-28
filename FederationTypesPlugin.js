@@ -158,7 +158,6 @@ class FederationTypesPlugin {
                   if (!declarationFileResponse) return
                   const declarationFileContent = declarationFileResponse.data
                   const decFilePath = path.join(remoteDeclareDirPath, moduleName)
-                  fs.writeFile(decFilePath, declarationFileContent, {recursive: true})
                   fs.promises
                     .mkdir(path.dirname(decFilePath), {recursive: true})
                     .catch((error) => logger.error(`Failed to write dir: ${decFilePath}`, error))
