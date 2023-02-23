@@ -141,7 +141,7 @@ class FederationTypesPlugin {
           .get(federationTypesUrl + "index.json")
           .catch((error) => {
             if (error.response?.status === 404) logger.warn(`WARNING: The remote ${remoteName} has no types`)
-            else logger.error(`Failed to get remote types from ${remotePublicUrl}.`, error.message)
+            else logger.warn(`Failed to get remote types from ${remotePublicUrl}.`, error.message)
           })
           .then((response) => response?.data)
           .then((modulesNames) => {
