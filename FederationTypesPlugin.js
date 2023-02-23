@@ -152,7 +152,7 @@ class FederationTypesPlugin {
               axios
                 .get(moduleDeclarationFileUrl)
                 .catch((error) => {
-                  logger.error(`Failed to get ${moduleDeclarationFileUrl} ${error.message}`)
+                  logger.warn(`Failed to get ${moduleDeclarationFileUrl} ${error.message}`)
                 })
                 .then((declarationFileResponse) => {
                   if (!declarationFileResponse) return
