@@ -165,7 +165,7 @@ class FederationTypesPlugin {
                     .catch((error) => logger.error(`Failed to write declaration file: ${decFilePath}`, error))
                 })
                 .catch((error) => {
-                  logger.error(`Failed to get ${moduleDeclarationFileUrl} ${error.message}`)
+                  logger.warn(`Failed to get ${moduleDeclarationFileUrl} ${error.message}`)
                 })
             })
           })
