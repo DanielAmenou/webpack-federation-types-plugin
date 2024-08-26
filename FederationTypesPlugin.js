@@ -1,4 +1,5 @@
 const validate = require("schema-utils").validate
+const {merge} = require("webpack-merge")
 const ts = require("typescript")
 const axios = require("axios")
 const fs = require("fs-extra")
@@ -31,6 +32,14 @@ const optionsSchema = {
     getTypesInterval: {
       type: "string",
     },
+    federationConfig: {
+      type: "object",
+      properties: {
+        exposes: {type: "object"},
+        remotes: {type: "object"},
+      },
+      additionalProperties: false,
+    },
   },
 }
 
@@ -57,33 +66,35 @@ class FederationTypesPlugin {
     const federationPlugin =
       compiler.options.plugins && compiler.options.plugins.find((plugin) => plugin.constructor.name === "ModuleFederationPlugin")
     if (!federationPlugin) throw new Error("No ModuleFederationPlugin found.")
+
+    const federationsOptions = merge(federationPlugin._options, this._options.federationConfig)
     const logger = compiler.getInfrastructureLogger(PLUGIN_NAME)
 
-    const exposes = Object.fromEntries(Object.entries(federationPlugin._options.exposes || {}).map(([moduleName, currentPath]) => {
-      let isIndexFile = false
-      const absPath = path.resolve(process.cwd(), currentPath)
-      const hasExtension = !!path.extname(currentPath)
-      const extension = hasExtension ? "" : fs.existsSync(absPath + ".jsx") ? ".jsx" : fs.existsSync(absPath + ".js") ? ".js" : ""
-      if (!hasExtension && extension === "") {
-        if ( fs.existsSync(path.resolve(absPath, "index.js"))) {
-          isIndexFile = true
+    const exposes = Object.fromEntries(
+      Object.entries(federationsOptions.exposes || {}).map(([moduleName, currentPath]) => {
+        let isIndexFile = false
+        const absPath = path.resolve(process.cwd(), currentPath)
+        const hasExtension = !!path.extname(currentPath)
+        const extension = hasExtension ? "" : fs.existsSync(absPath + ".jsx") ? ".jsx" : fs.existsSync(absPath + ".js") ? ".js" : ""
+        if (!hasExtension && extension === "") {
+          if (fs.existsSync(path.resolve(absPath, "index.js"))) {
+            isIndexFile = true
+          } else logger.error(`Couldn't find ${currentPath}`)
         }
-        else logger.error(`Couldn't find ${currentPath}`)
-      }
 
-      return [moduleName.replace("./", ""), currentPath + (isIndexFile ? "/index.js" : "") + extension]
-    }
-    ))
+        return [moduleName.replace("./", ""), currentPath + (isIndexFile ? "/index.js" : "") + extension]
+      }),
+    )
 
     const modulesPathsMap = Object.fromEntries(
       Object.entries(exposes).map(([name, currentPath]) => {
         return [name, path.join(process.cwd(), currentPath).replace(/\\/g, "/")]
-      })
+      }),
     )
 
     const declarationFileToExposeNameMap = Object.entries(modulesPathsMap).reduce(
       (result, [key, val]) => Object.assign(result, {[val.replace(/\.jsx?$/, DECLARATION_FILE_EXT)]: key}),
-      {}
+      {},
     )
 
     const modulesPaths = Object.values(modulesPathsMap)
@@ -109,7 +120,7 @@ class FederationTypesPlugin {
         if (typeDefFileContent) {
           compilation.emitAsset(
             path.join(MF_TYPES_DIR, declarationFileToExposeNameMap[typeDefFilePath] + DECLARATION_FILE_EXT),
-            getAssetData(typeDefFileContent)
+            getAssetData(typeDefFileContent),
           )
         } else {
           logger.warn(`failed to create ${typeDefFilePath}`)
@@ -124,7 +135,7 @@ class FederationTypesPlugin {
     const getRemoteDeclareDirPath = (remoteName) => path.resolve(process.cwd(), "node_modules", "@types", remoteName)
 
     const getTypesDefinitions = async () => {
-      const remotes = federationPlugin._options.remotes
+      const remotes = federationsOptions.remotes
       if (!remotes) return
 
       const excludeRemotes = this._options.excludeRemotes || []

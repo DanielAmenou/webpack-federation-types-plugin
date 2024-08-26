@@ -1,10 +1,8 @@
 # webpack-federation-types-plugin
 
-This plugin generates TypeScript type declaration files for the modules that are exposed by a remote application.
-With this plugin, you can get type definitions for your modules and use them in your consuming applications without having to manually import and maintain them.
+This plugin generates TypeScript type declaration files for the modules exposed by a remote application. It enables the automatic creation, sharing, and fetching of type definitions for your modules across different applications in a Webpack Module Federation setup.
 
-It compiles the exposed files into type declaration files and shares them as public files
-On the consumer side, the plugin fetches the remote types declaration files and adds them to the "node_modules/@types" directory. This is the standard location for TypeScript type definitions that are used by the consuming application. By placing the generated type declaration files in this directory, the plugin makes them available to the consuming application without the need for any additional configuration.
+The plugin compiles the exposed modules into TypeScript declaration files and shares them as public assets. On the consumer side, it automatically fetches these remote type declaration files and places them in the standard node_modules/@types directory. This ensures that the consuming application can seamlessly access the type definitions without any additional setup, making the integration of remote types effortless and transparent.
 
 ## Installation
 
@@ -38,6 +36,7 @@ The plugin takes an options object with the following properties:
 Type: boolean
 Default: true
 Description: create and share the declaration files
+
 ##### importTypes
 
 Type: boolean
@@ -56,3 +55,8 @@ Type: string
 Default: undefined
 Description: the interval between types requests
 Example: "5 minutes", "30 seconds"
+
+##### federationConfig
+
+Type: object
+Description: Allows you to override certain configurations from the ModuleFederationPlugin. You can specify properties such as exposes and remotes to merge or replace the original settings.
