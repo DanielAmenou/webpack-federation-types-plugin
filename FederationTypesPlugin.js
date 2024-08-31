@@ -67,7 +67,7 @@ class FederationTypesPlugin {
       compiler.options.plugins && compiler.options.plugins.find((plugin) => plugin.constructor.name === "ModuleFederationPlugin")
     if (!federationPlugin) throw new Error("No ModuleFederationPlugin found.")
 
-    const federationsOptions = merge(federationPlugin._options, this._options.federationConfig)
+    const federationsOptions = merge(federationPlugin._options, this._options.federationConfig || {})
     const logger = compiler.getInfrastructureLogger(PLUGIN_NAME)
 
     const exposes = Object.fromEntries(
