@@ -32,6 +32,9 @@ const optionsSchema = {
     getTypesInterval: {
       type: "string",
     },
+    headers: {
+      type: "object",
+    },
     federationConfig: {
       type: "object",
       properties: {
@@ -147,9 +150,11 @@ class FederationTypesPlugin {
         const remoteDeclareDirPath = getRemoteDeclareDirPath(remoteName)
         const federationTypesUrl = remotePublicUrl + MF_TYPES_DIR + "/"
 
+        const headers = this._options.headers || {}
+
         axios
           // get types index from the current remote
-          .get(federationTypesUrl + "index.json")
+          .get(federationTypesUrl + "index.json", {headers})
           .catch((error) => {
             if (error.response?.status === 404) logger.warn(`WARNING: The remote ${remoteName} has no types`)
             else logger.warn(`Failed to get remote types from ${remotePublicUrl}.`, error.message)
@@ -161,7 +166,7 @@ class FederationTypesPlugin {
             modulesNames.forEach((moduleName) => {
               const moduleDeclarationFileUrl = federationTypesUrl + moduleName
               axios
-                .get(moduleDeclarationFileUrl)
+                .get(moduleDeclarationFileUrl, {headers})
                 .catch((error) => {
                   logger.warn(`Failed to get ${moduleDeclarationFileUrl} ${error.message}`)
                 })

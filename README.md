@@ -31,32 +31,37 @@ module.exports = {
 
 The plugin takes an options object with the following properties:
 
-##### exposeTypes
+### exposeTypes
 
 Type: boolean
 Default: true
 Description: create and share the declaration files
 
-##### importTypes
+### importTypes
 
 Type: boolean
 Default: true
 Description: fetch the remotes declaration files and add them to the @types directory
 
-##### excludeRemotes
+### excludeRemotes
 
 Type: string[]
 Default: undefined
 Description: remotes to ignore
 
-##### getTypesInterval
+### getTypesInterval
 
 Type: string
 Default: undefined
 Description: the interval between types requests
 Example: "5 minutes", "30 seconds"
 
-##### federationConfig
+### federationConfig
 
 Type: object
 Description: Allows you to override certain configurations from the ModuleFederationPlugin. You can specify properties such as exposes and remotes to merge or replace the original settings.
+
+### headers
+
+Type: object
+Description: Allows you to add headers to the fetch request.
