@@ -1,7 +1,7 @@
 {
   "name": "webpack-federation-types-plugin",
   "description": "This plugin adds type definitions for remote modules",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "main": "FederationTypesPlugin.js",
   "types": "types.d.ts",
   "scripts": {
