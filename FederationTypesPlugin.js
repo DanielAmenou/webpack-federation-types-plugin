@@ -162,6 +162,11 @@ class FederationTypesPlugin {
           .then((response) => response?.data)
           .then((modulesNames) => {
             if (!modulesNames) return
+            // Ensure modulesNames is an array
+            if (!Array.isArray(modulesNames)) {
+              logger.warn(`Expected array but got ${typeof modulesNames} for remote ${remoteName}`)
+              return
+            }
             // for each remote module get his types
             modulesNames.forEach((moduleName) => {
               const moduleDeclarationFileUrl = federationTypesUrl + moduleName

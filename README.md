@@ -1,5 +1,7 @@
 # webpack-federation-types-plugin
 
+[![License](https://img.shields.io/npm/l/webpack-federation-types-plugin.svg)](https://github.com/DanielAmenou/webpack-federation-types-plugin/blob/main/LICENSE) [![npm downloads](https://img.shields.io/npm/dt/webpack-federation-types-plugin.svg)](https://www.npmjs.com/package/webpack-federation-types-plugin) [![npm version](https://img.shields.io/npm/v/webpack-federation-types-plugin.svg)](https://www.npmjs.com/package/webpack-federation-types-plugin)
+
 This plugin generates TypeScript type declaration files for the modules exposed by a remote application. It enables the automatic creation, sharing, and fetching of type definitions for your modules across different applications in a Webpack Module Federation setup.
 
 The plugin compiles the exposed modules into TypeScript declaration files and shares them as public assets. On the consumer side, it automatically fetches these remote type declaration files and places them in the standard node_modules/@types directory. This ensures that the consuming application can seamlessly access the type definitions without any additional setup, making the integration of remote types effortless and transparent.
