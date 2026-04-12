@@ -71,7 +71,7 @@ class FederationTypesPlugin {
     if (!federationPlugin) throw new Error("No ModuleFederationPlugin found.")
 
     const federationsOptions = merge(
-      federationPlugin._options ?? federationPlugin.userOptions ?? {},
+      federationPlugin.options ?? federationPlugin._options ?? federationPlugin.userOptions ?? {},
       this._options.federationConfig ?? {},
     )
     const logger = compiler.getInfrastructureLogger(PLUGIN_NAME)
