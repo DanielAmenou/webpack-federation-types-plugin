@@ -17,6 +17,10 @@
     "module federation"
   ],
   "homepage": "https://github.com/DanielAmenou/webpack-federation-types-plugin#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/DanielAmenou"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/DanielAmenou/webpack-federation-types-plugin.git"

@@ -67,3 +67,7 @@ Description: Allows you to override certain configurations from the ModuleFedera
 
 Type: object
 Description: Allows you to add headers to the fetch request.
+
+## Support
+
+If this project helps you, you can [sponsor development on GitHub](https://github.com/sponsors/DanielAmenou).
